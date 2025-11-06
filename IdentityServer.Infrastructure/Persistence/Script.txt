@@ -1,0 +1,289 @@
+USE [AuthDb]
+GO
+/****** Object:  Schema [OAuth]    Script Date: 10/5/2025 9:29:08 PM ******/
+CREATE SCHEMA [OAuth]
+GO
+/****** Object:  Table [OAuth].[AppSetting]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[AppSetting](
+	[AppSettingId] [int] IDENTITY(1,1) NOT NULL,
+	[AppSettingKey] [varchar](255) NULL,
+	[AppSettingValue] [nvarchar](max) NULL,
+	[DecryptionRequired] [bit] NULL,
+ CONSTRAINT [PK_AppSetting] PRIMARY KEY CLUSTERED 
+(
+	[AppSettingId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[Client]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[Client](
+	[OAuthClientId] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [varchar](300) NOT NULL,
+	[ClientSecret] [varchar](2000) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[Name] [varchar](250) NULL,
+	[GrantTypeId] [int] NULL,
+	[ApplicationId] [int] NULL,
+	[PublicKey] [nvarchar](max) NULL,
+	[PrivateKey] [nvarchar](max) NULL,
+	[AccessTokenValidity] [int] NULL,
+	[SignatureKey] [nvarchar](max) NULL,
+	[SignatureVality] [int] NULL,
+ CONSTRAINT [PK_Client] PRIMARY KEY CLUSTERED 
+(
+	[OAuthClientId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[ExceptionLog]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[ExceptionLog](
+	[ExceptionLogId] [int] IDENTITY(1,1) NOT NULL,
+	[ExceptionSource] [varchar](255) NULL,
+	[ExceptionType] [varchar](255) NULL,
+	[ExceptionMessage] [varchar](2500) NULL,
+	[StackTrace] [varchar](max) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UserId] [int] NULL,
+	[ClientId] [varchar](255) NULL,
+ CONSTRAINT [PK_ExceptionLog] PRIMARY KEY CLUSTERED 
+(
+	[ExceptionLogId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[GrantType]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[GrantType](
+	[GrantTypeId] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](300) NOT NULL,
+	[ShortDescription] [varchar](300) NOT NULL,
+ CONSTRAINT [PK_GrantType] PRIMARY KEY CLUSTERED 
+(
+	[GrantTypeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[RefreshToken]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[RefreshToken](
+	[RefreshTokenId] [int] IDENTITY(1,1) NOT NULL,
+	[Token] [nvarchar](max) NULL,
+	[UserId] [int] NULL,
+	[OAuthClientId] [int] NULL,
+	[ExpiresOn] [datetime] NULL,
+	[IsRevoked] [bit] NULL,
+	[CreatedOn] [nchar](10) NULL,
+ CONSTRAINT [PK_RefreshToken] PRIMARY KEY CLUSTERED 
+(
+	[RefreshTokenId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[RequestResponseLog]    Script Date: 10/5/2025 9:29:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[RequestResponseLog](
+	[RequestResponseLogId] [int] IDENTITY(1,1) NOT NULL,
+	[MachineName] [varchar](255) NULL,
+	[RequestContentType] [varchar](255) NULL,
+	[RequestIpAddress] [varchar](255) NULL,
+	[RequestContentBody] [varchar](max) NULL,
+	[RequestUri] [varchar](1500) NULL,
+	[RequestMethod] [varchar](255) NULL,
+	[RequestRouteTemplate] [varchar](255) NULL,
+	[RequestRouteDate] [varchar](max) NULL,
+	[RequestHeader] [varchar](max) NULL,
+	[RequestDateTime] [datetime] NULL,
+	[ResponseContentType] [varchar](255) NULL,
+	[ResponseContentBody] [varchar](max) NULL,
+	[ResponseStatusCode] [int] NULL,
+	[ResponseHeader] [varchar](max) NULL,
+	[ResponseDateTime] [datetime] NULL,
+	[ClientTimeStamp] [datetime] NULL,
+	[UserId] [int] NULL,
+	[ClientId] [varchar](255) NULL,
+ CONSTRAINT [PK_RequestResponseLog] PRIMARY KEY CLUSTERED 
+(
+	[RequestResponseLogId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[Scope]    Script Date: 10/5/2025 9:29:09 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[Scope](
+	[ScopeId] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](255) NOT NULL,
+	[ShortDescription] [varchar](255) NOT NULL,
+	[Description] [varchar](2000) NULL,
+ CONSTRAINT [PK_Scope] PRIMARY KEY CLUSTERED 
+(
+	[ScopeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[User]    Script Date: 10/5/2025 9:29:09 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[User](
+	[UserId] [int] IDENTITY(1,1) NOT NULL,
+	[Username] [varchar](255) NOT NULL,
+	[Password] [nvarchar](2000) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[Firstname] [varchar](255) NULL,
+	[Lastname] [varchar](255) NULL,
+	[EmailAddress] [varchar](255) NULL,
+	[AccessFailedCount] [int] NULL,
+	[LockoutEnd] [datetime] NULL,
+	[ApplicationUserId] [int] NULL,
+	[ApplicationName] [varchar](100) NULL,
+	[ClientId] [varchar](300) NULL,
+ CONSTRAINT [PK_OAuth.User] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [OAuth].[UserClientScope]    Script Date: 10/5/2025 9:29:09 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [OAuth].[UserClientScope](
+	[UserClientScopeId] [int] IDENTITY(1,1) NOT NULL,
+	[OAuthClientId] [int] NOT NULL,
+	[ScopeId] [int] NOT NULL,
+	[UserId] [int] NULL,
+	[ScopeGranted] [bit] NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_UserClientScope] PRIMARY KEY CLUSTERED 
+(
+	[UserClientScopeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [OAuth].[AppSetting] ON 
+
+INSERT [OAuth].[AppSetting] ([AppSettingId], [AppSettingKey], [AppSettingValue], [DecryptionRequired]) VALUES (1, N'TokenExpiry', N'3600', 0)
+INSERT [OAuth].[AppSetting] ([AppSettingId], [AppSettingKey], [AppSettingValue], [DecryptionRequired]) VALUES (2, N'RefreshTokenExpiry', N'2592000', 0)
+INSERT [OAuth].[AppSetting] ([AppSettingId], [AppSettingKey], [AppSettingValue], [DecryptionRequired]) VALUES (3, N'MaxLoginAttempts', N'5', 0)
+INSERT [OAuth].[AppSetting] ([AppSettingId], [AppSettingKey], [AppSettingValue], [DecryptionRequired]) VALUES (4, N'LockoutDuration', N'900', 0)
+INSERT [OAuth].[AppSetting] ([AppSettingId], [AppSettingKey], [AppSettingValue], [DecryptionRequired]) VALUES (5, N'EncryptionKey', N'MySecretEncryptionKey123!', 1)
+SET IDENTITY_INSERT [OAuth].[AppSetting] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[Client] ON 
+
+INSERT [OAuth].[Client] ([OAuthClientId], [ClientId], [ClientSecret], [CreatedOn], [IsActive], [Name], [GrantTypeId], [ApplicationId], [PublicKey], [PrivateKey], [AccessTokenValidity], [SignatureKey], [SignatureVality]) VALUES (1, N'client_web_app_001', N'secret_web_001_AbCdEfGhIjKlMnOpQrStUvWxYz', CAST(N'2025-09-26T18:19:05.830' AS DateTime), 1, N'Web Application Client', 1, 1001, NULL, NULL, 3600, NULL, 7200)
+SET IDENTITY_INSERT [OAuth].[Client] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[ExceptionLog] ON 
+
+INSERT [OAuth].[ExceptionLog] ([ExceptionLogId], [ExceptionSource], [ExceptionType], [ExceptionMessage], [StackTrace], [CreatedOn], [UserId], [ClientId]) VALUES (1, N'OAuth.TokenController', N'InvalidGrantException', N'Invalid authorization code provided', N'at OAuth.TokenController.GenerateToken()', CAST(N'2025-09-26T16:19:05.933' AS DateTime), 1, N'client_web_app_001')
+INSERT [OAuth].[ExceptionLog] ([ExceptionLogId], [ExceptionSource], [ExceptionType], [ExceptionMessage], [StackTrace], [CreatedOn], [UserId], [ClientId]) VALUES (2, N'OAuth.AuthController', N'UserNotActiveException', N'User account is not active', N'at OAuth.AuthController.ValidateUser()', CAST(N'2025-09-26T17:19:05.933' AS DateTime), NULL, N'client_mobile_app_002')
+INSERT [OAuth].[ExceptionLog] ([ExceptionLogId], [ExceptionSource], [ExceptionType], [ExceptionMessage], [StackTrace], [CreatedOn], [UserId], [ClientId]) VALUES (3, N'OAuth.TokenController', N'TokenExpiredException', N'Access token has expired', N'at OAuth.TokenController.ValidateToken()', CAST(N'2025-09-26T17:49:05.933' AS DateTime), 21, N'client_api_service_003')
+SET IDENTITY_INSERT [OAuth].[ExceptionLog] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[GrantType] ON 
+
+INSERT [OAuth].[GrantType] ([GrantTypeId], [Name], [ShortDescription]) VALUES (1, N'authorization_code', N'Authorization Code Grant')
+INSERT [OAuth].[GrantType] ([GrantTypeId], [Name], [ShortDescription]) VALUES (2, N'client_credentials', N'Client Credentials Grant')
+INSERT [OAuth].[GrantType] ([GrantTypeId], [Name], [ShortDescription]) VALUES (3, N'password', N'Resource Owner Password Credentials')
+INSERT [OAuth].[GrantType] ([GrantTypeId], [Name], [ShortDescription]) VALUES (4, N'refresh_token', N'Refresh Token Grant')
+INSERT [OAuth].[GrantType] ([GrantTypeId], [Name], [ShortDescription]) VALUES (5, N'implicit', N'Implicit Grant')
+SET IDENTITY_INSERT [OAuth].[GrantType] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[RefreshToken] ON 
+
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (1, N'refresh_token_web_001_abc123def456ghi789', 1, 1, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (2, N'refresh_token_web_002_jkl012mno345pqr678', 2, 1, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (3, N'refresh_token_mobile_001_stu901vwx234yz567', 11, 2, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (4, N'refresh_token_mobile_002_abc890def123ghi456', 12, 2, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (5, N'refresh_token_api_001_jkl789mno012pqr345', 21, 3, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (6, N'refresh_token_desktop_001_stu678vwx901yz234', 31, 4, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (7, N'refresh_token_partner_001_abc567def890ghi123', 41, 5, CAST(N'2025-10-26T18:19:05.927' AS DateTime), 0, N'2025-09-26')
+INSERT [OAuth].[RefreshToken] ([RefreshTokenId], [Token], [UserId], [OAuthClientId], [ExpiresOn], [IsRevoked], [CreatedOn]) VALUES (8, N'refresh_token_revoked_example_456789', 5, 1, CAST(N'2025-09-21T18:19:05.927' AS DateTime), 1, N'2025-08-22')
+SET IDENTITY_INSERT [OAuth].[RefreshToken] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[RequestResponseLog] ON 
+
+INSERT [OAuth].[RequestResponseLog] ([RequestResponseLogId], [MachineName], [RequestContentType], [RequestIpAddress], [RequestContentBody], [RequestUri], [RequestMethod], [RequestRouteTemplate], [RequestRouteDate], [RequestHeader], [RequestDateTime], [ResponseContentType], [ResponseContentBody], [ResponseStatusCode], [ResponseHeader], [ResponseDateTime], [ClientTimeStamp], [UserId], [ClientId]) VALUES (1, N'WEB-SERVER-01', N'application/x-www-form-urlencoded', N'192.168.1.100', N'grant_type=authorization_code&code=abc123&client_id=client_web_app_001', N'/oauth/token', N'POST', N'oauth/token', NULL, N'Content-Type: application/x-www-form-urlencoded', CAST(N'2025-09-26T18:04:05.943' AS DateTime), N'application/json', N'{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...","token_type":"Bearer","expires_in":3600}', 200, N'Content-Type: application/json', CAST(N'2025-09-26T18:04:05.943' AS DateTime), CAST(N'2025-09-26T18:04:05.943' AS DateTime), 1, N'client_web_app_001')
+INSERT [OAuth].[RequestResponseLog] ([RequestResponseLogId], [MachineName], [RequestContentType], [RequestIpAddress], [RequestContentBody], [RequestUri], [RequestMethod], [RequestRouteTemplate], [RequestRouteDate], [RequestHeader], [RequestDateTime], [ResponseContentType], [ResponseContentBody], [ResponseStatusCode], [ResponseHeader], [ResponseDateTime], [ClientTimeStamp], [UserId], [ClientId]) VALUES (2, N'MOBILE-API-01', N'application/json', N'10.0.0.50', N'{"username":"mobileuser001","password":"userpass123"}', N'/oauth/authorize', N'POST', N'oauth/authorize', NULL, N'Content-Type: application/json', CAST(N'2025-09-26T18:09:05.943' AS DateTime), N'application/json', N'{"authorization_code":"def456xyz789","expires_in":600}', 200, N'Content-Type: application/json', CAST(N'2025-09-26T18:09:05.943' AS DateTime), CAST(N'2025-09-26T18:09:05.943' AS DateTime), 11, N'client_mobile_app_002')
+INSERT [OAuth].[RequestResponseLog] ([RequestResponseLogId], [MachineName], [RequestContentType], [RequestIpAddress], [RequestContentBody], [RequestUri], [RequestMethod], [RequestRouteTemplate], [RequestRouteDate], [RequestHeader], [RequestDateTime], [ResponseContentType], [ResponseContentBody], [ResponseStatusCode], [ResponseHeader], [ResponseDateTime], [ClientTimeStamp], [UserId], [ClientId]) VALUES (3, N'API-GATEWAY-01', N'application/json', N'172.16.0.25', N'{"grant_type":"client_credentials","client_id":"client_api_service_003","client_secret":"secret_api_003_QwErTyUiOpAsDfGhJkLzXcVbNm"}', N'/oauth/token', N'POST', N'oauth/token', NULL, N'Content-Type: application/json', CAST(N'2025-09-26T18:14:05.943' AS DateTime), N'application/json', N'{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...","token_type":"Bearer","expires_in":7200}', 200, N'Content-Type: application/json', CAST(N'2025-09-26T18:14:05.943' AS DateTime), CAST(N'2025-09-26T18:14:05.943' AS DateTime), 21, N'client_api_service_003')
+SET IDENTITY_INSERT [OAuth].[RequestResponseLog] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[Scope] ON 
+
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (1, N'read', N'Read Access', N'Allows reading of user data and resources')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (2, N'write', N'Write Access', N'Allows modification of user data and resources')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (3, N'delete', N'Delete Access', N'Allows deletion of user data and resources')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (4, N'admin', N'Admin Access', N'Full administrative access to all resources')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (5, N'profile', N'Profile Access', N'Access to user profile information')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (6, N'email', N'Email Access', N'Access to user email address')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (7, N'openid', N'OpenID Connect', N'OpenID Connect authentication scope')
+INSERT [OAuth].[Scope] ([ScopeId], [Name], [ShortDescription], [Description]) VALUES (8, N'offline_access', N'Offline Access', N'Allows refresh token generation for offline access')
+SET IDENTITY_INSERT [OAuth].[Scope] OFF
+GO
+SET IDENTITY_INSERT [OAuth].[User] ON 
+
+INSERT [OAuth].[User] ([UserId], [Username], [Password], [IsActive], [CreatedOn], [Firstname], [Lastname], [EmailAddress], [AccessFailedCount], [LockoutEnd], [ApplicationUserId], [ApplicationName], [ClientId]) VALUES (59, N'admin@sunrisepg.com', N'test@123', 1, CAST(N'2025-10-05T14:47:56.450' AS DateTime), N'Rajamanikkam', N'Savurimuthu', NULL, 0, NULL, NULL, NULL, NULL)
+INSERT [OAuth].[User] ([UserId], [Username], [Password], [IsActive], [CreatedOn], [Firstname], [Lastname], [EmailAddress], [AccessFailedCount], [LockoutEnd], [ApplicationUserId], [ApplicationName], [ClientId]) VALUES (60, N'Sabariadmin@sunrisepg.com', N'test@123', 1, CAST(N'2025-10-05T14:51:56.693' AS DateTime), N'Sabari', N'Malai', NULL, 0, NULL, NULL, NULL, NULL)
+INSERT [OAuth].[User] ([UserId], [Username], [Password], [IsActive], [CreatedOn], [Firstname], [Lastname], [EmailAddress], [AccessFailedCount], [LockoutEnd], [ApplicationUserId], [ApplicationName], [ClientId]) VALUES (61, N'Ganesh@sunrisepg.com', N'test@123', 1, CAST(N'2025-10-05T15:37:14.200' AS DateTime), N'Ganesh', N'Ganesh', NULL, 0, NULL, NULL, NULL, NULL)
+SET IDENTITY_INSERT [OAuth].[User] OFF
+GO
+ALTER TABLE [OAuth].[Client] ADD  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [OAuth].[Client] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [OAuth].[Client] ADD  DEFAULT ((60)) FOR [AccessTokenValidity]
+GO
+ALTER TABLE [OAuth].[User] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [OAuth].[User] ADD  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [OAuth].[Client]  WITH CHECK ADD  CONSTRAINT [FK_Client_GrantType] FOREIGN KEY([GrantTypeId])
+REFERENCES [OAuth].[GrantType] ([GrantTypeId])
+GO
+ALTER TABLE [OAuth].[Client] CHECK CONSTRAINT [FK_Client_GrantType]
+GO
+ALTER TABLE [OAuth].[UserClientScope]  WITH CHECK ADD  CONSTRAINT [FK_UserClientScope_Client] FOREIGN KEY([OAuthClientId])
+REFERENCES [OAuth].[Client] ([OAuthClientId])
+GO
+ALTER TABLE [OAuth].[UserClientScope] CHECK CONSTRAINT [FK_UserClientScope_Client]
+GO
+ALTER TABLE [OAuth].[UserClientScope]  WITH CHECK ADD  CONSTRAINT [FK_UserClientScope_Scope] FOREIGN KEY([ScopeId])
+REFERENCES [OAuth].[Scope] ([ScopeId])
+GO
+ALTER TABLE [OAuth].[UserClientScope] CHECK CONSTRAINT [FK_UserClientScope_Scope]
+GO
+ALTER TABLE [OAuth].[UserClientScope]  WITH CHECK ADD  CONSTRAINT [FK_UserClientScope_User] FOREIGN KEY([UserId])
+REFERENCES [OAuth].[User] ([UserId])
+GO
+ALTER TABLE [OAuth].[UserClientScope] CHECK CONSTRAINT [FK_UserClientScope_User]
+GO
