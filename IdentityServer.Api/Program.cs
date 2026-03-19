@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("IdentityServerPolicy",
+    options.AddPolicy("AllowAngular",
         policy =>
         {
             policy.AllowAnyOrigin()
