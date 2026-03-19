@@ -68,7 +68,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.SetIsOriginAllowed(origin => true)
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -87,7 +87,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles(); // Needed for Swagger UI static files
 
-app.UseCors("AllowSpecificOrigins");
+app.UseCors("AllowAngular");
 
 // Swagger
 app.UseSwagger();
