@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using IdentityServer.Api.Extensions;
 using IdentityServer.Api.Middleware;
 using IdentityServer.Application;
@@ -6,10 +6,7 @@ using IdentityServer.Application.Interfaces;
 using IdentityServer.Application.Mappings;
 using IdentityServer.Application.Services;
 using IdentityServer.Infrastructure;
-using IdentityServer.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -40,7 +37,8 @@ builder.Services.AddScoped<IClientSecretHashingService, ClientSecretHashingServi
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
 
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<MappingProfile>();
@@ -58,12 +56,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "DefaultSecretKeyForJwtTokenGeneration123456789")),
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+                ?? "DefaultSecretKeyForJwtTokenGeneration123456789")),
             ClockSkew = TimeSpan.Zero
         };
     });
-
-
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -78,29 +75,41 @@ builder.Services.AddCors(options =>
         });
 });
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+
+// 🔥 IMPORTANT: Must match IIS Application Alias
+app.UsePathBase("/PGIdentityServer");
+
+
+// Configure middleware pipeline
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(); // Needed for Swagger UI static files
 
 app.UseCors("AllowSpecificOrigins");
 
-// Use Swagger Documentation
-app.UseSwaggerDocumentation(app.Environment);
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("./v1/swagger.json", "IdentityServer API v1");
+    c.RoutePrefix = "swagger";
+});
 
+// Custom Exception Middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRouting();
 app.MapControllers();
-//app.MapHealthChecks("/health");
 
-// Add a simple home page that redirects to Swagger
-app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+// Redirect root to swagger
+app.MapGet("/", () => Results.Redirect("swagger"))
+   .ExcludeFromDescription();
 
 app.Run();
 
-public partial class Program { } // For integration tests
+public partial class Program { }
