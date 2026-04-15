@@ -13,37 +13,35 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog
+// ─── Configure Serilog ────────────────────────────────────────────────────────
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// Add services to the container
+// ─── Add Services ─────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 
-// Add Swagger Documentation
+// Swagger
 builder.Services.AddSwaggerDocumentation();
 
-// Add Application Services
+// Application & Infrastructure layers
 builder.Services.AddApplication();
-
-// Add Infrastructure Services
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Add Security Services
+// Security Services
 builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
 builder.Services.AddScoped<IClientSecretHashingService, ClientSecretHashingService>();
 
-// Add AutoMapper
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Add MediatR
+// MediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
 
-// Add FluentValidation
+// FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<MappingProfile>();
 
-// Add JWT Authentication
+// JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -56,40 +54,41 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
-                ?? "DefaultSecretKeyForJwtTokenGeneration123456789")),
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"]
+                    ?? "DefaultSecretKeyForJwtTokenGeneration123456789")),
             ClockSkew = TimeSpan.Zero
         };
     });
 
-// Add CORS
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.SetIsOriginAllowed(origin => true)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
+// ─── Build App ────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
-
-// 🔥 IMPORTANT: Must match IIS Application Alias
+// Must match IIS Application Alias — set before any middleware
 app.UsePathBase("/PGIdentityServer");
 
+// 1️⃣ Exception handler — catches everything, must be first
+app.UseMiddleware<ExceptionMiddleware>();
 
-// Configure middleware pipeline
+// 2️⃣ HTTPS redirection
 app.UseHttpsRedirection();
 
-app.UseStaticFiles(); // Needed for Swagger UI static files
+// 3️⃣ Static files (needed for Swagger UI assets)
+app.UseStaticFiles();
 
-app.UseCors("AllowAngular");
-
-// Swagger
+// 4️⃣ Swagger (before routing/auth so it is always accessible)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -97,16 +96,20 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-// Custom Exception Middleware
-app.UseMiddleware<ExceptionMiddleware>();
+// 5️⃣ Routing — must come before Auth middleware
+app.UseRouting();
 
+// 6️⃣ CORS — must come after UseRouting and before UseAuthentication
+app.UseCors("AllowAll");
+
+// 7️⃣ Authentication & Authorization — order matters
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseRouting();
+// 8️⃣ Map endpoints
 app.MapControllers();
 
-// Redirect root to swagger
+// Redirect root → Swagger
 app.MapGet("/", () => Results.Redirect("swagger"))
    .ExcludeFromDescription();
 
