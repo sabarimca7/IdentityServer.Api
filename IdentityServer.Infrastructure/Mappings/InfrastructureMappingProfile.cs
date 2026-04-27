@@ -12,7 +12,8 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<Client, ClientModel>().ReverseMap();
 
         // User mappings
-        CreateMap<User, UserModel>().ReverseMap();
+        CreateMap<User, UserModel>().ReverseMap()
+            .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId));
 
         // Scope mappings
         CreateMap<Scope, ScopeModel>().ReverseMap();
@@ -25,6 +26,9 @@ public class InfrastructureMappingProfile : Profile
 
         // RefreshToken mappings
         CreateMap<RefreshToken, RefreshTokenModel>().ReverseMap();
+
+        // AuthorizationCode mappings
+        CreateMap<AuthorizationCode, AuthorizationCodeModel>().ReverseMap();
 
         // AppSetting mappings
         CreateMap<AppSetting, AppSettingModel>().ReverseMap();

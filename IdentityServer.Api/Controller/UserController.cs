@@ -10,7 +10,7 @@ namespace IdentityServer.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+//[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -59,7 +59,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
     {
         try
-        {
+         {
             var user = await _mediator.Send(new CreateUserCommand { UserDto = userDto });
             if (user == null)
                 return NotFound(ApiResponse<UserDto>.ErrorResponse("User not found"));
@@ -70,6 +70,41 @@ public class UserController : ControllerBase
         {
             _logger.LogError(ex, "Error creating user");
             return StatusCode(500, ApiResponse<UserDto>.ErrorResponse("Internal server error"));
+        }
+    }
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
+    {
+        try
+        {
+            if (id != userDto.UserId)
+                return BadRequest(ApiResponse<UserDto>.ErrorResponse("ID mismatch"));
+
+            var user = await _mediator.Send(new UpdateUserCommand { UserDto = userDto });
+            return Ok(ApiResponse<UserDto>.SuccessResponse(user));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating user {Id}", id);
+            return StatusCode(500, ApiResponse<UserDto>.ErrorResponse("Internal server error"));
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteUser(int id)
+    {
+        try
+        {
+            var result = await _mediator.Send(new DeleteUserCommand { Id = id });
+            if (!result)
+                return NotFound(ApiResponse<bool>.ErrorResponse("User not found"));
+
+            return Ok(ApiResponse<bool>.SuccessResponse(true, "User deleted successfully"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting user {Id}", id);
+            return StatusCode(500, ApiResponse<bool>.ErrorResponse("Internal server error"));
         }
     }
 }

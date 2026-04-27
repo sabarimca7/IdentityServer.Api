@@ -17,6 +17,9 @@ public class TokenServiceTests
 {
     private readonly Mock<IConfiguration> _configurationMock;
     private readonly Mock<IClientService> _clientServiceMock;
+    private readonly Mock<IUserService> _userServiceMock;
+    private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;
+    private readonly Mock<IAuthorizationCodeService> _authorizationCodeServiceMock;
     private readonly Mock<ILogger<TokenService>> _loggerMock;
     private readonly TokenService _tokenService;
 
@@ -24,6 +27,9 @@ public class TokenServiceTests
     {
         _configurationMock = new Mock<IConfiguration>();
         _clientServiceMock = new Mock<IClientService>();
+        _userServiceMock = new Mock<IUserService>();
+        _refreshTokenServiceMock = new Mock<IRefreshTokenService>();
+        _authorizationCodeServiceMock = new Mock<IAuthorizationCodeService>();
         _loggerMock = new Mock<ILogger<TokenService>>();
 
         // Setup configuration
@@ -31,7 +37,7 @@ public class TokenServiceTests
         _configurationMock.Setup(x => x["Jwt:Issuer"]).Returns("IdentityServer");
         _configurationMock.Setup(x => x["Jwt:Audience"]).Returns("IdentityServerAPI");
 
-        _tokenService = new TokenService(_configurationMock.Object, _clientServiceMock.Object, _loggerMock.Object,null);
+        _tokenService = new TokenService(_configurationMock.Object, _clientServiceMock.Object, _loggerMock.Object, _userServiceMock.Object, _refreshTokenServiceMock.Object, _authorizationCodeServiceMock.Object);
     }
 
     [Fact]

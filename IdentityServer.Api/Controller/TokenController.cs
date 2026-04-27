@@ -96,7 +96,8 @@ public class TokenController : ControllerBase
     {
         try
         {
-            var tokenResponse = await _tokenService.RefreshTokenAsync(refresh_token);
+            var decodedToken = Uri.UnescapeDataString(refresh_token ?? "");
+            var tokenResponse = await _tokenService.RefreshTokenAsync(decodedToken);
             return Ok(tokenResponse);
         }
         catch (Exception ex)

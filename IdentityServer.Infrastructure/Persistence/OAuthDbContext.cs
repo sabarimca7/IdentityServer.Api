@@ -18,6 +18,7 @@ public class OAuthDbContext : DbContext
     public DbSet<ScopeModel> Scopes { get; set; }
     public DbSet<UserModel> Users { get; set; }
     public DbSet<UserClientScopeModel> UserClientScopes { get; set; }
+    public DbSet<AuthorizationCodeModel> AuthorizationCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,6 +71,15 @@ public class OAuthDbContext : DbContext
         modelBuilder.Entity<RefreshTokenModel>(entity =>
         {
             entity.HasKey(e => e.RefreshTokenId);
+        });
+
+        // Configure AuthorizationCode entity
+        modelBuilder.Entity<AuthorizationCodeModel>(entity =>
+        {
+            entity.HasKey(e => e.AuthorizationCodeId);
+            entity.Property(e => e.Code).IsRequired().HasMaxLength(400);
+            entity.Property(e => e.ExpiresOn).IsRequired();
+            entity.Property(e => e.IsUsed).HasDefaultValue(false);
         });
     }
 }

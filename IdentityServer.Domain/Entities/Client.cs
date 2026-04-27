@@ -11,7 +11,7 @@ namespace IdentityServer.Domain.Entities
         public int OAuthClientId { get; set; }
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; }
         public string? Name { get; set; }
         public int? GrantTypeId { get; set; }

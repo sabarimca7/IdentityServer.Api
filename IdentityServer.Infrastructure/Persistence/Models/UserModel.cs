@@ -16,6 +16,10 @@ public class UserModel
     [StringLength(2000)]
     public string? Password { get; set; }
 
+    // Add ClientId to persist and return the client identifier
+    [StringLength(255)]
+    public string? ClientId { get; set; }
+
     public bool IsActive { get; set; }
     public DateTime CreatedOn { get; set; }
 

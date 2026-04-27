@@ -31,12 +31,19 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
 builder.Services.AddScoped<IClientSecretHashingService, ClientSecretHashingService>();
 
+
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // MediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<MappingProfile>();
@@ -68,8 +75,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
+              //.AllowCredentials();
     });
 });
 

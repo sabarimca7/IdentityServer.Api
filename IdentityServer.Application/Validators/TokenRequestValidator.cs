@@ -32,7 +32,7 @@ public class TokenRequestValidator : AbstractValidator<TokenRequest>
 
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Authorization code is required")
-            .When(x => x.GrantType == AuthConstants.GrantTypes.AuthorizationCode);
+            .When(x => x.GrantType == AuthConstants.GrantTypes.AuthorizationCode || x.GrantType == AuthConstants.GrantTypes.Code);
     }
 
     private bool BeValidGrantType(string grantType)
@@ -40,6 +40,7 @@ public class TokenRequestValidator : AbstractValidator<TokenRequest>
         var validGrantTypes = new[]
         {
             AuthConstants.GrantTypes.AuthorizationCode,
+            AuthConstants.GrantTypes.Code,
             AuthConstants.GrantTypes.ClientCredentials,
             AuthConstants.GrantTypes.Password,
             AuthConstants.GrantTypes.RefreshToken,

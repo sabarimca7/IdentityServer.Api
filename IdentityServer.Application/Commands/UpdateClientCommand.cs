@@ -24,7 +24,7 @@ public class UpdateClientCommandHandler : IRequestHandler<UpdateClientCommand, C
 
     public async Task<ClientDto> Handle(UpdateClientCommand request, CancellationToken cancellationToken)
     {
-        var client = _mapper.Map<Client>(request.ClientDto);
+        var client = _mapper.Map<Client>(request.ClientDto);         
         var updatedClient = await _clientService.UpdateClientAsync(client);
         return _mapper.Map<ClientDto>(updatedClient);
     }

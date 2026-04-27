@@ -11,6 +11,7 @@ namespace IdentityServer.Common.Constants
         public static class GrantTypes
         {
             public const string AuthorizationCode = "authorization_code";
+            public const string Code = "code"; // alias for some clients sending 'code'
             public const string ClientCredentials = "client_credentials";
             public const string Password = "password";
             public const string RefreshToken = "refresh_token";

@@ -16,6 +16,7 @@ public class MappingProfile : Profile
 
         CreateMap<User, UserDto>();
         CreateMap<CreateUserDto, User>();
+        CreateMap<UpdateUserDto, User>();
 
         CreateMap<Scope, ScopeDto>();
         CreateMap<GrantType, GrantTypeDto>();

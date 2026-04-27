@@ -10,9 +10,11 @@ namespace IdentityServer.Domain.Entities
     {
         public int UserId { get; set; }
         public string Username { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+
         public string? Password { get; set; }
         public bool IsActive { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public string? Firstname { get; set; }
         public string? Lastname { get; set; }
         public string? EmailAddress { get; set; }

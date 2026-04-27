@@ -22,6 +22,9 @@ public static class DependencyInjection
 
         services.AddScoped<IClientService, ClientRepository>();
         services.AddScoped<IUserService, UserRepository>();
+        services.AddScoped<IScopeService, ScopeRepository>();
+        services.AddScoped<IRefreshTokenService, RefreshTokenRepository>();
+        services.AddScoped<IAuthorizationCodeService, AuthorizationCodeRepository>();
         return services;
     }
 }

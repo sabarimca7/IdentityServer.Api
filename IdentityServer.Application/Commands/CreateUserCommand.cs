@@ -34,9 +34,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ApiRe
             return ApiResponse<UserDto>.ErrorResponse("User already exists");
         }
         // Need Hash password
-      // var hashedPassword 
+        // var hashedPassword 
         var users = new User
         {
+            ClientId = request.UserDto.OAuthClientId.ToString(),
+       
+       // ClientId = user.ClientId,
             Username = user.Username,
             Password = user.Password,
             Firstname = user.Firstname,

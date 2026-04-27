@@ -9,7 +9,7 @@ namespace IdentityServer.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+//[Authorize]
 public class ScopeController : ControllerBase
 {
     private readonly IMediator _mediator;
