@@ -117,8 +117,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Redirect root → Swagger
-app.MapGet("/", () => Results.Redirect("swagger"))
-   .ExcludeFromDescription();
+app.MapGet("/", () => Results.Redirect("/PGIdentityServer/swagger"));
 app.UseSwagger();
 app.UseSwaggerUI();
 
