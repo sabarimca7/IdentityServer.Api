@@ -119,6 +119,8 @@ app.MapControllers();
 // Redirect root → Swagger
 app.MapGet("/", () => Results.Redirect("swagger"))
    .ExcludeFromDescription();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
 
